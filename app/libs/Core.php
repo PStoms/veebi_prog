@@ -6,7 +6,7 @@
 
 class Core
 {
-    protected $currentController = 'pages';
+    protected $currentController = 'Pages';
     protected $currentMethod = 'index';
     protected $params = array();
 
@@ -15,13 +15,32 @@ class Core
             $url = $this->getUrl();
              if (file_exists('../app/controllers/' .ucwords($url[0]).'.php')){
              $this->currentController = ucwords($url[0]);
+             unset($url[0]);
              }
+
+            require_once '../app/controllers/'.$this->currentController.'.php';
+             $this->currentController = new $this->currentController();
+
+            if (isset($url[1])){
+                if (method_exists($this->currentController, $url[1])){
+                    $this->currentMethod = $url[1];
+                    unset($url[1]);
+                }
+            }
+
+            echo '<pre>';
+            print_r($url);
+            echo '</pre>';
         }
-    public function getUrl(){
+
+
+
+        // url get & prep
+        public function getUrl(){
         if (isset($_GET['url'])){
             $url = rtrim($_GET['url'], '/');
             $url = filter_var($url, FILTER_SANITIZE_URL);
-            $URL = explode('/', $url);
+            $url = explode('/', $url);
             return $url;
         }
     }
