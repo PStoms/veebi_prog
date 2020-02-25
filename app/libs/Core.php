@@ -31,6 +31,10 @@ class Core
             echo '<pre>';
             print_r($url);
             echo '</pre>';
+
+            $this->params = $url ? array_values($url) : array();
+
+            call_user_func_array(array($this->currentController, $this->currentMethod), $this->params);
         }
 
 
